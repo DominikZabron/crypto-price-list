@@ -17,7 +17,8 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             qs = parse_qs(urlparse(self.path).query)
-            data = db.get_ranked_prices(int(qs['limit'][0]) or DEFAULT_LIMIT)
+            limit = qs.get('limit', (0,))[0] or DEFAULT_LIMIT
+            data = db.get_ranked_prices(limit)
             self.send_response(200)
             self._add_headers()
             self.wfile.write(bytes(json.dumps(data), 'utf-8'))
